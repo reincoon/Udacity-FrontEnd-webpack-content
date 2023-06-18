@@ -2,17 +2,31 @@ const path = require("path")
 const webpack = require("webpack")
 const HtmlWebPackPlugin = require("html-webpack-plugin")
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 module.exports = {
     mode: 'production',
     entry: './src/client/index.js',
     entry: './src/client/js/formHandler.js',
     entry: './src/client/js/nameChecker.js',
+    output: {
+        libraryTarget: 'var',
+        library: 'Client'
+    },
+    optimization: {
+        minimizer: [new TerserPlugin({}), new OptimizeCSSAssetsPlugin({})],
+    },
     module: {
         rules: [
                 {
             test: /\.js$/,
             exclude: /node_modules/,
             loader: "babel-loader"
+                },
+                {
+            test: /\.scss$/,
+            use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
                 }
         ]
     },
